@@ -1,16 +1,44 @@
 'use strict';
 
+/* const $root = document.getElementById('root');
+
+let cards = `
+<div class="d-flex flex-wrap">
+`;
+
 fetch('file.json')
-.then((res) => res.json())
-.then((info) => {
-  //console.log('info', info)
-  for (let i = 0; i < info.length; i++){
-    document.writeln( info[i].student);
-  }
-})
+  .then((res) => res.json())
+  .then((info) => {
+    for (let i = 0; i < info.length; i++) {
+      cards += `
+<div class="card">
+  <img class="card-img-top" src="https://github.com/${info[i].usernameGithub}.png" alt="Imagen de perfil de ${info[i].student}">
+  <div class="card-body">
+  <h5 class="card-title">${info[i].student}</h5>
+  </div>
+  <div class="card-body">
+  <a href="https://github.com/${info[i].usernameGithub}" target="_blank" rel="noopener noreferrer" class="card-link">GitHub</a>
+  </div>
+</div>
+      `;
+    }
+    cards += '</div>';
+    $root.innerHTML = cards;
+  }) */
+const frase = prompt('por favor, escriba una frase');
+let contador = 0;
 
+for (const siclo of frase) {
+  if(siclo === 'a' || 'á' || 'A')
+    if(siclo === 'e' + 'é' + 'E')
+      if(siclo === 'i' + 'í' + 'I')
+        if( siclo === 'o' + 'ó' + 'O')
+          if(siclo === 'u' + 'ú' + 'U')
+ contador++
+}
 
-
+console.log(contador);
+//console.log(siclo)
 
 
 
