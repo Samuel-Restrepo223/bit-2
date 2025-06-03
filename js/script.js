@@ -1,307 +1,98 @@
 'use strict';
 
-/* const $root = document.getElementById('root');
+// assets/js/script.js
 
-let cards = `
-<div class="d-flex flex-wrap">
-`;
+// Ruta a tu archivo JSON. Asegúrate de que sea correcta.
+const JSON_FILE_PATH = 'file.json'; // O 'assets/file.json' si está dentro de 'assets'
 
-fetch('file.json')
-  .then((res) => res.json())
-  .then((info) => {
-    for (let i = 0; i < info.length; i++) {
-      cards += `
-<div class="card">
-  <img class="card-img-top" src="https://github.com/${info[i].usernameGithub}.png" alt="Imagen de perfil de ${info[i].student}">
-  <div class="card-body">
-  <h5 class="card-title">${info[i].student}</h5>
-  </div>
-  <div class="card-body">
-  <a href="https://github.com/${info[i].usernameGithub}" target="_blank" rel="noopener noreferrer" class="card-link">GitHub</a>
-  </div>
-</div>
-      `;
+// Contenedor donde vamos a mostrar la información
+const studentsContainer = document.getElementById('students-container');
+
+// Función para cargar los datos del JSON
+async function loadStudentsData() {
+    try {
+        const response = await fetch(JSON_FILE_PATH);
+
+        if (!response.ok) {
+            throw new Error(`Error al cargar el archivo JSON: ${response.status} ${response.statusText}`);
+        }
+
+        const students = await response.json(); // 'students' ahora es el array de objetos del JSON
+        
+        // Limpiar el mensaje de "Cargando datos..."
+        studentsContainer.innerHTML = '';
+
+        // Iterar sobre cada estudiante y mostrar su información
+        students.forEach(student => { // Este bucle es crucial para procesar cada estudiante.
+            const studentCard = document.createElement('div');
+            studentCard.classList.add('student-card'); // Puedes usar esta clase para estilizar con CSS
+
+            let sumOfNormalizedProjectScores = 0; // Para la suma de las notas NORMALIZADAS de CADA proyecto del estudiante
+            let numberOfProjects = 0; // Para contar cuántos proyectos tiene el estudiante
+
+            // Función auxiliar para calcular y normalizar la nota de un proyecto
+            const calculateProjectNormalizedScore = (scoresArray) => {
+                if (!Array.isArray(scoresArray) || scoresArray.length === 0) {
+                    return 0; // Si no es un array o está vacío, la nota es 0
+                }
+
+                const sumScores = scoresArray.reduce((sum, s) => sum + (Number(s) || 0), 0);
+
+                if (scoresArray.length > 1) {
+                    // Si es un array de múltiples notas (ej. [1, 1, 0.5, ...])
+                    return (sumScores / 10) * 5; // Normaliza la suma de hasta 10 puntos a una escala de 0-5
+                } else {
+                    // Si es un array con un solo elemento (ej. [4], [9.5], [0])
+                    const singleScore = Number(scoresArray[0]) || 0;
+                    return singleScore > 5 ? (singleScore / 2) : singleScore; // Si el valor es > 5, asume que es sobre 10 y lo divide por 2
+                }
+            };
+
+            // Recorrer los proyectos para calcular las notas individuales normalizadas y la suma total
+            const formattedProjects = student.projects.map(project => {
+                const normalizedScore = calculateProjectNormalizedScore(project.score);
+                sumOfNormalizedProjectScores += normalizedScore; // Acumular la suma de las notas normalizadas
+                numberOfProjects++; // Contar los proyectos
+                return `<li>${project.name}: ${normalizedScore.toFixed(1)}</li>`;
+            }).join('');
+
+            // Calcular el promedio general de las notas de proyectos del estudiante
+            const averageProjectScore = numberOfProjects > 0 
+                                       ? (sumOfNormalizedProjectScores / numberOfProjects) 
+                                       : 0;
+
+
+            // URL para la imagen de perfil de GitHub
+            const githubProfileImageUrl = student.usernameGithub 
+                ? `https://github.com/${student.usernameGithub}.png` 
+                : 'https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg'; // O una ruta a tu propia imagen predeterminada
+
+            studentCard.innerHTML = `
+                <h2>${student.student}</h2>
+                <p><strong>Código:</strong> ${student.code}</p>
+                <p><strong>Intensidad:</strong> ${student.intensity}</p>
+                ${student.usernameGithub ? 
+                    `<p><strong>Usuario GitHub:</strong> <a href="https://github.com/${student.usernameGithub}" target="_blank">${student.usernameGithub}</a></p>
+                     <img src="${githubProfileImageUrl}" alt="Perfil de GitHub de ${student.student}" style="width: 80px; height: 80px; border-radius: 50%; margin-top: 10px;">` 
+                    : `<p><strong>Usuario GitHub:</strong> No especificado</p>
+                       <img src="${githubProfileImageUrl}" alt="No hay imagen de GitHub" style="width: 80px; height: 80px; border-radius: 50%; margin-top: 10px;">`
+                }
+                <p><strong>Proyectos:</strong></p>
+                <ul>
+                    ${formattedProjects}
+                </ul>
+                <p><strong>Promedio de Notas de Proyectos:</strong> ${averageProjectScore.toFixed(1)}</p>
+                <hr>
+            `;
+            
+            studentsContainer.appendChild(studentCard);
+        }); 
+
+    } catch(error) {
+        console.error("Error al cargar o procesar los datos de los estudiantes:", error);
+        studentsContainer.innerHTML = `<p style="color: red;">No se pudieron cargar los datos de los estudiantes. ${error.message}</p>`;
     }
-    cards += '</div>';
-    $root.innerHTML = cards;
-  }) */
-const frase = prompt('por favor, escriba una frase');
-let contador = 0;
-
-for (const siclo of frase) {
-  if(siclo === 'a' || 'á' || 'A')
-    if(siclo === 'e' + 'é' + 'E')
-      if(siclo === 'i' + 'í' + 'I')
-        if( siclo === 'o' + 'ó' + 'O')
-          if(siclo === 'u' + 'ú' + 'U')
- contador++
 }
 
-console.log(contador);
-//console.log(siclo)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* const $msg = document.getElementById('message');
-const $form = document.getElementById('loginForm');
-
-$form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  login();
-});
-
-function login() {
-  const username = $form.username.value;
-  const password = $form.password.value;
-  let message = '';
-  if (username === 'pepa' && password === 'ABC123') {
-    $msg.classList.add('success');
-    message = 'Bienvenida';
-    $form.style.display = 'none';
-  } else {
-    $msg.classList.add('warning');
-    message = 'Acceso denegado';
-  }
-  $msg.textContent = message;
-} */
- 
-
-//otro tema
-
-
-
-/* function User(username, pasword) {
-  if (username === 'pepa' && pasword  === 'ABC123') {
-    console.log('Bienvenida.');
-  }else{
-  console.log('Acceso denegado.')
-  }
-} */
-
-// worshp
-
-/* let miArreglo = [];
-miArreglo = [
-  "Colombia", "México", "Argentina", "España", "Perú", "Chile", "Ecuador", "Venezuela", "Guatemala", "Cuba", 
-];
-console.log(miArreglo)
- for (let i = 0; i < miArreglo.length ; i++){
-  console.log(miArreglo[i]);
- }; */
-
-/* Jueguito */
-
-/*  // Generar un número secreto aleatorio entre 1 y 5
-const numeroSecreto = Math.floor(Math.random() * 5) + 1;
-let intentosRestantes = 2;
-
-function verificarIntento() {
-  // Obtener el valor ingresado por el usuario
-  const intentoUsuario = parseInt(document.getElementById('intentoUsuario').value);
-  const mensajeElemento = document.getElementById('mensaje');
-
-  // Validar que el usuario haya ingresado un número
-  if (isNaN(intentoUsuario)) {
-    mensajeElemento.textContent = 'Por favor, ingresa un número.';
-    return; // Sale de la función si la entrada no es un número
-  }
-
-  // Validar que el número esté dentro del rango
-  if (intentoUsuario < 1 || intentoUsuario > 5) {
-    mensajeElemento.textContent = 'El número debe estar entre 1 y 5.';
-    return; // Sale de la función si el número está fuera del rango
-  }
-
-  intentosRestantes--; // Reduce la cantidad de intentos restantes en 1
-
-  // Verificar si el usuario adivinó correctamente
-  if (intentoUsuario === numeroSecreto) {
-    mensajeElemento.textContent = '¡Ganaste! Adivinaste el número secreto.';
-    // Deshabilitar el botón para que no siga intentando
-    document.querySelector('button').disabled = true;
-    // Opcionalmente, podrías revelar el número secreto aquí
-    // mensajeElemento.textContent += ` Era el ${numeroSecreto}.`;
-  } else if (intentosRestantes > 0) {
-    mensajeElemento.textContent = `Incorrecto. Te quedan ${intentosRestantes} intento(s).`;
-  } else {
-    mensajeElemento.textContent = `Perdiste, tuviste 2 intentos. El número secreto era ${numeroSecreto}.`;
-    // Deshabilitar el botón
-    document.querySelector('button').disabled = true;
-  }
-
-  // Limpiar el campo de entrada después de cada intento
-  document.getElementById('intentoUsuario').value = ''; */
-
-
-/* let miObjeto = {}
-miObjeto = {
-  nombre: 'Sofia',
-  semestre: 5,
-  edad: 24,
-  puesto: 3,
-}
-console.log(miObjeto.nombre)
-console.log(miObjeto.semestre)
-console.log(miObjeto.edad)
-console.log(miObjeto.puesto) */
-
-/* function ex  (nombre, apellido) {
-  const obj = {
-    nombre,
-    apellido,
-  }
-  return '(obj.nombre) (obj.apellido)';
-}
-
-let valorRetornado = ex();    
-console.log('valor retornado:', valorRetornado); */
-
-
-/* 
-prompt('escriba su nombre y apellido')
-
-let miObjeto = {
-  name: prompt,
-  lastname: prompt
-};
-console.log(prompt)
- */
-
-/* Crear 4 funciones, cada una debe realizar una opereación aritmética básica
-- (suma, resta, multiplicación y división)
-- Cada función debe recibir 2 números y retornar el resultado según corresponda
-- Solicitar al usuario que ingrese 2 números enteros
-- Mostrarle al usuario el resultado de cada operación
-Ej Entrada: 10 2
-Ej Salida:
-10 + 2 = 12 ...
-*/
-
-/*  function suma(numero1, numero2) {
-return numero1 + numero2;
-};
-
-function resta(numero1, numero2) {
-return numero1 - numero2;
-};
-function multiplicacion(numero1, numero2) {
-return numero1 * numero2;
-};
-function dividir(num1, num2) {
-  if (num2 === 0) {
-    return "Error: No se puede dividir por cero.";
-  } else {
-    return num1 / num2;
-  }
-}
-
-let num1 = parseInt(prompt("Por favor, ingresa el primer número entero:"));
-let num2 = parseInt(prompt("Por favor, ingresa el segundo número entero:"));
-
-let resultadoSuma = suma(num1 + num2)
-console.log(num1 + num2);
-
-let resultadoResta = suma(num1 - num2)
-console.log(num1 - num2);
-
-let resultadoMultiplicacion = suma(num1 * num2)
-console.log(num1 * num2);
-
-let resultadoDiv = suma(num1 / num2)
-console.log(num1 / num2);          
- */
-
-
-/* *Ejercicio 1: Calculadora de Área de un Rectángulo*
-
-* *Consigna:*
-    1.  Crea una función llamada calcularAreaRectangulo que reciba dos parámetros: base y altura.
-    2.  La función debe calcular el área del rectángulo (base * altura).
-    3.  La función debe retornar el resultado.
-    4.  Solicita al usuario la base y la altura del rectángulo.
-    5.  Muestra el resultado del cálculo al usuario.
-
-* *Pista:* Similar a la suma, pero con multiplicación. Recuerda parseInt() para las entradas.
- */
-
-/* function calcularAreaRectangulo(num1, num2) {
-  return num1 * num2; 
-}
-
-let base = parseInt(prompt("Por favor escoja un numero para la base del rectanculo"))
-let altura = parseInt(prompt("Por favor escoja un numero para la altura del rectanculo"))
-
-let resultadoArea = calcularAreaRectangulo(base, altura);
-console.log("la base del rectangulo es:", base, "la altura del rectangulo es:", altura, "y el area es:",  resultadoArea); 
-console.log(resultadoArea); */
-
-/* *Ejercicio 2: Conversor de Temperatura (Celsius a Fahrenheit)*
-
-* *Consigna:*
-    1.  Crea una función llamada celsiusToFahrenheit que reciba un parámetro: celsius.
-    2.  La función debe convertir la temperatura de Celsius a Fahrenheit usando la fórmula: (Celsius * 9/5) + 32.
-    3.  La función debe retornar el resultado.
-    4.  Solicita al usuario una temperatura en grados Celsius.
-    5.  Muestra la temperatura convertida en Fahrenheit al usuario.
-
-* *Pista:* Necesitarás solo un parámetro para la función.
- */
-
-/* function celsiusToFahrenheit(celsius) {
-  return (celsius *9/5)+32;
-}
-let celsius = parseInt(prompt("Por favor escoja un numero para convertirlo de celcius a fahrenheit"));
-
-let conversion = celsiusToFahrenheit(celsius);
-console.log (conversion)
-  */
-
-/* *Ejercicio 3: Verificador de Número Par o Impar*
-
-* *Consigna:*
-    1.  Crea una función llamada esPar que reciba un parámetro: numero.
-    2.  La función debe determinar si el número es par o impar.
-    3.  Si el número es par, la función debe retornar true. Si es impar, debe retornar false.
-    4.  Solicita al usuario un número entero.
-    5.  Usa la función esPar para verificar si el número ingresado es par o impar y muestra un mensaje apropiado al usuario (ej: "El número X es par" o "El número Y es impar").
-
-* *Pista:* El operador módulo (%) es muy útil aquí. numero % 2 te dará el resto de la división por 2. Si el resto es 0, es par.
- */
-
- //por terminar 
-
-/*  *Ejercicio 4: Encontrar el Número Mayor*
-
-* *Consigna:*
-    1.  Crea una función llamada encontrarMayor que reciba dos parámetros: num1 y num2.
-    2.  La función debe comparar los dos números y retornar el mayor de ellos.
-    3.  Solicita al usuario que ingrese dos números.
-    4.  Usa la función encontrarMayor para determinar cuál es el número más grande y muestra el resultado al usuario.
-
-* *Pista:* Puedes usar una estructura if/else o el operador ternario para la comparación.
- */
-
-/* function encontrarMayor(num1, num2) {
-  if (num1 > num2){
-    console.log(num1)
-  }else(num2 < num1);{
-    console.log(num2)
-  }
-}
-let num1 = parseInt(prompt("Por favor ingrese un numero"))
-let num2 = parseInt(prompt("Por favor ingrese un numero"))
-
-let conversion = encontrarMayor(num1, num2);
-console.log (conversion) */
-
+// Llamar a la función para cargar los datos cuando la página se cargue
+document.addEventListener('DOMContentLoaded', loadStudentsData);
