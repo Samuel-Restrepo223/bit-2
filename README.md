@@ -2,9 +2,9 @@
  
 ---
 
-* Este proyecto es una pagina web que permite visualizar la informacion de los estudiantes de BIT a partir de un archivo Json.
+### Este proyecto es una pagina web que permite visualizar la informacion de los estudiantes de BIT a partir de un archivo Json.
 
-* Se puede ver de manera clara los siguientes puntos:
+##### Se puede ver de manera clara los siguientes puntos:
 
 - Nombre del estudiante
 - Codigo del estudiante
